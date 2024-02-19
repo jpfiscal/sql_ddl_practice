@@ -1,0 +1,96 @@
+--Medical Center DDL--
+CREATE TABLE doctor
+(id SERIAL PRIMARY KEY,
+first_name CHAR(50) NOT NULL,
+last_name CHAR(50) NOT NULL,
+specialty CHAR(100))
+
+CREATE TABLE patient
+(id SERIAL PRIMARY KEY,
+first_name CHAR(50) NOT NULL,
+last_name CHAR(50) NOT NULL)
+
+CREATE TABLE disease
+(id SERIAL PRIMARY KEY,
+"name" CHAR(50) NOT NULL,
+"desc" TEXT)
+
+CREATE TABLE doctor_patient
+(id SERIAL PRIMARY KEY,
+doctor_id INTEGER REFERENCES doctor(id),
+patient_id INTEGER REFERENCES patient(id))
+
+CREATE TABLE diagnosis
+(id SERIAL PRIMARY KEY,
+disease_id INTEGER REFERENCES disease(id),
+patient_id INTEGER REFERENCES patient(id))
+
+--Craigslist--
+CREATE TABLE region
+(id SERIAL PRIMARY KEY,
+"name" CHAR(50) NOT NULL)
+
+CREATE TABLE user
+(id SERIAL PRIMARY KEY,
+username VARCHAR(50) UNIQUE NOT NULL,
+preferred_region INTEGER REFERENCES region(id) ON DELETE SET NULL)
+
+CREATE TABLE category
+(id SERIAL PRIMARY KEY,
+"name" CHAR(50) NOT NULL)
+
+CREATE TABLE post
+(id SERIAL PRIMARY KEY,
+title CHAR(50) NOT NULL,
+"text" TEXT NOT NULL,
+"location" CHAR(50),
+region_id INTEGER REFERENCES region(id) ON DELETE SET NULL,
+author_id INTEGER REFERENCES user(id) ON DELETE SET NULL,
+category_id INTEGER REFERENCES category(id) ON DELETE SET NULL)
+
+--Soccer League--
+CREATE TABLE position
+(id SERIAL PRIMARY KEY,
+"desc" CHAR(50) NOT NULL)
+
+CREATE TABLE team
+(id SERIAL PRIMARY KEY,
+"name" CHAR(50) NOT NULL)
+
+CREATE TABLE player
+(id SERIAL PRIMARY KEY,
+team_id INTEGER REFERENCES team(id) ON DELETE SET NULL,
+"name" CHAR(50) NOT NULL)
+
+CREATE TABLE player_position
+(id SERIAL PRIMARY KEY,
+position_id INTEGER REFERENCES position(id) ON DELETE CASCADE,
+player_id INTEGER REFERENCES player(id) ON DELETE CASCADE)
+
+CREATE TABLE season
+(id SERIAL PRIMARY KEY,
+start_dt DATE NOT NULL,
+end_dt DATE NOT NULL,
+yr INTEGER NOT NULL)
+
+CREATE TABLE match
+(id SERIAL PRIMARY KEY,
+season_id INTEGER REFERENCES season(id) ON DELETE CASCADE,
+team_home INTEGER REFERENCES team(id) ON DELETE CASCADE,
+team_away INTEGER REFERENCES team(id) ON DELETE CASCADE,
+winner INTEGER REFERENCES team(id) ON DELETE CASCADE,
+match_date DATE NOT NULL)
+
+CREATE TABLE goal
+(id SERIAL PRIMARY KEY,
+player_id INTEGER REFERENCES player(id),
+match_id INTEGER REFERENCES match(id))
+
+CREATE TABLE referee
+(id SERIAL PRIMARY KEY,
+"name" CHAR(50) NOT NULL)
+
+CREATE TABLE match_referee
+(id SERIAL PRIMARY KEY,
+referee_id INTEGER REFERENCES referee(id) ON DELETE CASCADE,
+match_id INTEGER REFERENCES match(id) ON DELETE CASCADE)
